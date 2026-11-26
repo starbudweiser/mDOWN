@@ -22,7 +22,7 @@ enum L {
     /// « il y a 3 h » dans la langue de l'appli.
     static func ago(_ d: Date) -> String {
         let f = RelativeDateTimeFormatter()
-        f.locale = locale; f.unitsStyle = .abbreviated
+        f.locale = locale; f.unitsStyle = .short; f.dateTimeStyle = .numeric
         return f.localizedString(for: d, relativeTo: Date())
     }
 

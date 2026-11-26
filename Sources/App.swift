@@ -101,6 +101,7 @@ enum MainWindow {
             }
             window = w
         }
+        if CommandLine.arguments.contains("--quiet") { window?.orderBack(nil); return }      // essais : fenêtre affichée sans prendre le focus
         NSApp.activate()
         window?.orderFrontRegardless()
         window?.makeKeyAndOrderFront(nil)

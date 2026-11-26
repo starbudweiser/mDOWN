@@ -49,7 +49,7 @@ struct Card<Content: View>: View {
     var pad: CGFloat = 12
     @ViewBuilder var content: Content
     var body: some View {
-        content.padding(pad)
+        content.frame(maxWidth: .infinity, alignment: .leading).padding(pad)
             .background(T.card, in: RoundedRectangle(cornerRadius: T.rCard, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: T.rCard, style: .continuous).stroke(T.line, lineWidth: 1))
     }

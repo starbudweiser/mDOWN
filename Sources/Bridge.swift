@@ -7,7 +7,7 @@ import AppKit
 @MainActor
 final class Bridge {
     static let shared = Bridge()
-    static let port: UInt16 = 47615
+    static let port: UInt16 = Paths.isDev ? 47616 : 47615      // l'édition de développement a son propre port
     static let scheme = Paths.isDev ? "mdown-dev" : "mdown"
 
     private var source: DispatchSourceRead?
