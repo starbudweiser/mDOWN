@@ -90,11 +90,16 @@ final class Bridge {
             close(c)
         }
 
-        // Une page web quelconque ne doit jamais pouvoir piloter l'appli : seules les extensions passent, avec le code d'association.
+        // Une page web quelconque ne doit jamais pouvoir piloter l'appli. Les requêtes GET d'une extension n'envoient pas toujours
+        // « Origin » : on accepte donc une origine absente, mais le code d'association reste obligatoire (un en-tête personnalisé
+        // exige une pré-vérification que seules les extensions passent) et l'hôte doit être la boucle locale (contre le « DNS rebinding »).
         let origin = hdr["origin"] ?? ""
-        guard ["chrome-extension://", "moz-extension://", "safari-web-extension://"].contains(where: origin.hasPrefix) else { reply(403, "Forbidden", ["ok": false]); return }
+        let host = (hdr["host"] ?? "").lowercased()
+        guard host.hasPrefix("127.0.0.1") || host.hasPrefix("localhost") else { reply(403, "Forbidden", ["ok": false]); return }
+        let fromExtension = ["chrome-extension://", "moz-extension://", "safari-web-extension://"].contains(where: origin.hasPrefix)
+        guard fromExtension || (origin.isEmpty && method != "OPTIONS") else { reply(403, "Forbidden", ["ok": false]); return }
         if method == "OPTIONS" { reply(204, "No Content", origin: origin); return }
-        guard hdr["x-mdown-token"] == token else { reply(401, "Unauthorized", ["ok": false, "error": "code"], origin: origin); return }
+        guard hdr["x-mdown-token"] == token else { reply(401, "Unauthorized", ["ok": false, "error": "code"], origin: origin.isEmpty ? nil : origin); return }
 
         var req = (try? JSONSerialization.jsonObject(with: body)) as? [String: Any] ?? [:]
         switch path {
@@ -103,12 +108,12 @@ final class Bridge {
         case "/jobs": req["op"] = "list"
         case "/cancel": req["op"] = "cancel"
         case "/retry": req["op"] = "retry"
-        default: reply(404, "Not Found", ["ok": false], origin: origin); return
+        default: reply(404, "Not Found", ["ok": false], origin: origin.isEmpty ? nil : origin); return
         }
         Task { @MainActor in
             var r = await ControlServer.handle(req)
             if path == "/ping" { r = ["ok": true, "version": r["version"] ?? "", "installed": r["installed"] ?? false] }
-            DispatchQueue.global().async { reply(200, "OK", r, origin: origin) }
+            DispatchQueue.global().async { reply(200, "OK", r, origin: origin.isEmpty ? nil : origin) }
         }
     }
 

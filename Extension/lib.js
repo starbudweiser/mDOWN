@@ -12,9 +12,9 @@ async function mdown(path, body) {
   if (!code) return { ok: false, error: "bad_code" };
   try {
     const r = await fetch(`http://127.0.0.1:${port}${path}`, {
-      method: body === undefined ? "GET" : "POST",
+      method: "POST",             // POST : Chrome envoie alors toujours l'origine de l'extension
       headers: { "Content-Type": "application/json", "X-mDOWN-Token": code },
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: JSON.stringify(body === undefined ? {} : body),
     });
     if (r.status === 401) return { ok: false, error: "bad_code" };
     return await r.json();

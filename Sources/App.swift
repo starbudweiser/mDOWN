@@ -36,9 +36,18 @@ struct MDownApp: App {
             Button(L.t("menu.about")) { About.show() }
             Button(L.t("menu.quit")) { NSApp.terminate(nil) }.keyboardShortcut("q")
         } label: {
-            Image(systemName: !access.pending.isEmpty ? "exclamationmark.circle" : store.isBusy ? "arrow.down.circle.fill" : "arrow.down.circle")       // silhouette monochrome : suit le thème de la barre
+            menuIcon(!access.pending.isEmpty ? "exclamationmark.circle" : store.isBusy ? "arrow.down.circle.fill" : "arrow.down.circle")       // silhouette monochrome : suit le thème de la barre
         }
     }
+}
+
+/// Silhouette monochrome (image modèle : suit le thème de la barre), plus grande que le pictogramme par défaut.
+@MainActor
+func menuIcon(_ name: String) -> Image {
+    let cfg = NSImage.SymbolConfiguration(pointSize: 19, weight: .semibold)
+    guard let img = NSImage(systemSymbolName: name, accessibilityDescription: "mDOWN")?.withSymbolConfiguration(cfg) else { return Image(systemName: name) }
+    img.isTemplate = true
+    return Image(nsImage: img)
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {

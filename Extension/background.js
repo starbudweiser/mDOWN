@@ -14,7 +14,7 @@ function badge(tabId, text, color) {
   setTimeout(() => chrome.action.setBadgeText({ text: "", tabId }), 2500);
 }
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+async function onMenuClick(info, tab) {
   const candidates = [info.linkUrl, info.srcUrl, info.frameUrl, info.pageUrl, tab && tab.url];
   const url = candidates.find((u) => u && /^https?:/i.test(u) && !u.startsWith("blob:"));
   if (!url || !tab) return;
@@ -24,4 +24,5 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     badge(tab.id, "!", "#c0392b");
     if (r.error === "app_off") chrome.tabs.create({ url: `mdown://download?url=${encodeURIComponent(url)}&mode=${info.menuItemId}`, active: false });
   }
-});
+}
+chrome.contextMenus.onClicked.addListener(onMenuClick);
