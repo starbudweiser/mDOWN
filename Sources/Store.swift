@@ -20,6 +20,7 @@ struct Job: Identifiable, Codable, Equatable {
     var height: Int?                     // nil = meilleure qualité
     var format = "mp4"
     var noPlaylist = false
+    var cookiesFile: String?             // cookies du navigateur de l'appelant (wCLAUDE…), fichier privé supprimé après le téléchargement
     var folder: String?                  // dossier choisi par l'appelant (agent) ; sinon celui des réglages
     var attempts = 0
     var error: String?
@@ -62,7 +63,7 @@ final class Store: ObservableObject {
         }
     }
 
-    func start() { pump(); scheduleRetries() }
+    func start() { purgeCookies(); pump(); scheduleRetries() }
 
     // MARK: Ajout
 
@@ -72,7 +73,7 @@ final class Store: ObservableObject {
     /// Ajoute les liens trouvés dans `text` (les options non données viennent des réglages) et rend leurs identifiants.
     /// Un lien déjà en cours rend l'identifiant du téléchargement existant.
     @discardableResult
-    func addJobs(text: String, audio: Bool? = nil, quality: String? = nil, format: String? = nil, folder: String? = nil) -> [UUID] {
+    func addJobs(text: String, audio: Bool? = nil, quality: String? = nil, format: String? = nil, folder: String? = nil, cookies: String? = nil) -> [UUID] {
         let ud = UserDefaults.standard
         let isAudio = audio ?? (ud.string(forKey: "mode") == "audio")
         let q = quality ?? ud.string(forKey: "quality") ?? "best"
@@ -88,6 +89,7 @@ final class Store: ObservableObject {
             j.format = isAudio ? (["m4a", "mp3"].contains(fmt) ? fmt : "m4a") : (["mp4", "mkv"].contains(fmt) ? fmt : "mp4")
             j.noPlaylist = url.contains("v=") && url.contains("list=")     // un lien de vidéo dans une liste : la vidéo seule
             j.folder = folder
+            j.cookiesFile = cookies.flatMap { Self.writeCookies($0, for: j.id) }
             jobs.insert(j, at: 0); ids.append(j.id); added = true
         }
         if added { save(); pump() }
@@ -109,6 +111,30 @@ final class Store: ObservableObject {
         return d
     }
 
+    // MARK: Cookies fournis par l'appelant
+
+    private static let cookiesDir: URL = {
+        let u = Paths.base.appendingPathComponent("cookies", isDirectory: true)
+        try? FileManager.default.createDirectory(at: u, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        return u
+    }()
+
+    private static func writeCookies(_ text: String, for id: UUID) -> String? {
+        guard text.utf8.count <= 1_000_000 else { return nil }
+        let f = cookiesDir.appendingPathComponent(id.uuidString + ".txt")
+        guard (try? text.write(to: f, atomically: true, encoding: .utf8)) != nil else { return nil }
+        try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: f.path)
+        return f.path
+    }
+
+    private func dropCookies(_ j: Job) { if let c = j.cookiesFile { try? FileManager.default.removeItem(atPath: c) } }
+
+    /// Fichiers de cookies qui ne servent plus (téléchargement retiré ou terminé).
+    private func purgeCookies() {
+        let used = Set(jobs.compactMap(\.cookiesFile))
+        for f in (try? FileManager.default.contentsOfDirectory(at: Self.cookiesDir, includingPropertiesForKeys: nil)) ?? [] where !used.contains(f.path) { try? FileManager.default.removeItem(at: f) }
+    }
+
     static func clipboardURL() -> String? {
         guard let s = NSPasteboard.general.string(forType: .string) else { return nil }
         for w in s.split(whereSeparator: { $0.isWhitespace }) {
@@ -127,7 +153,7 @@ final class Store: ObservableObject {
     func retry(_ id: UUID) { if let i = idx(id) { jobs[i].attempts = 0; resume(id) } }
     func cancel(_ id: UUID) {
         if running.contains(id) { stops[id] = .cancel; procs[id]?.terminate() }
-        else { jobs.removeAll { $0.id == id }; save() }
+        else { if let j = jobs.first(where: { $0.id == id }) { dropCookies(j) }; jobs.removeAll { $0.id == id }; save() }
     }
     func remove(_ id: UUID) { cancel(id) }
     func reveal(_ id: UUID) {
@@ -182,7 +208,9 @@ final class Store: ObservableObject {
         if job0.title == nil {
             var a = ["-J", "--flat-playlist", "--no-warnings", "--playlist-items", "1:100"]
             a.append(job0.noPlaylist ? "--no-playlist" : "--yes-playlist")
-            a += engine.commonArgs(); a.append(job0.url)
+            a += engine.commonArgs()
+            if let c = job0.cookiesFile { a += ["--cookies", c] }
+            a.append(job0.url)
             let r = await Proc.run(engine.ytdlp.path, a, timeout: 180)
             if stops[id] != nil { finishStop(id); return }
             guard r.status == 0, let data = r.out.data(using: .utf8), let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
@@ -209,6 +237,7 @@ final class Store: ObservableObject {
                 $0.state = .done; $0.progress = 1; $0.speed = nil; $0.eta = nil; $0.error = nil; $0.finished = Date()
                 $0.file = path; if let size, job.count == nil { $0.bytes = size }
             }
+            dropCookies(job); mutate(id) { $0.cookiesFile = nil }
             if let pid = job.platformID, let name = job.platform { engine.record(platform: pid, name: name, ok: true) }
         } else {
             fail(id, err: result.err, fallback: "", retry: true)
@@ -216,7 +245,7 @@ final class Store: ObservableObject {
     }
 
     private func finishStop(_ id: UUID) {
-        if stops[id] == .cancel { jobs.removeAll { $0.id == id } }
+        if stops[id] == .cancel { if let j = jobs.first(where: { $0.id == id }) { dropCookies(j) }; jobs.removeAll { $0.id == id } }
         else { mutate(id) { $0.state = .paused; $0.speed = nil; $0.eta = nil } }
     }
 
@@ -313,7 +342,9 @@ final class Store: ObservableObject {
             a += ["-f", "bv*\(cap)+ba/b\(cap)", "--merge-output-format", job.format]
             a += job.format == "mp4" ? ["-S", (job.height ?? 0) > 1080 ? "res,vcodec:h264,acodec:m4a" : "vcodec:h264,res,acodec:m4a"] : ["-S", "res,vcodec,acodec"]
         }
-        a += engine.commonArgs(); a.append(job.url)
+        a += engine.commonArgs()
+        if let c = job.cookiesFile { a += ["--cookies", c] }
+        a.append(job.url)
 
         let ctx = Ctx()
         let audio = job.audio

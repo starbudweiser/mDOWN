@@ -21,7 +21,7 @@ private func readLine(fd: Int32, timeout: Int) -> Data? {
     var tv = timeval(tv_sec: timeout, tv_usec: 0)
     setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, socklen_t(MemoryLayout<timeval>.size))
     var buf = Data(), chunk = [UInt8](repeating: 0, count: 4096)
-    while buf.count < 1 << 20 {
+    while buf.count < 1 << 21 {
         let n = recv(fd, &chunk, chunk.count, 0)
         if n <= 0 { return buf.isEmpty ? nil : buf }
         buf.append(chunk, count: n)
@@ -92,7 +92,7 @@ final class ControlServer {
                 }
             }
             let ids = store.addJobs(text: r["url"] as? String ?? "", audio: (r["mode"] as? String).map { $0 == "audio" }, quality: r["quality"] as? String,
-                                    format: r["format"] as? String, folder: folder)
+                                    format: r["format"] as? String, folder: folder, cookies: r["cookies"] as? String)
             guard let first = ids.first else { return ["ok": false, "error": L.t("err.badurl")] }
             return ["ok": true, "ids": ids.map(\.uuidString), "job": store.dict(store.jobs.first { $0.id == first } ?? Job(url: ""))]
         case "status":
@@ -164,6 +164,7 @@ enum MCPServer {
             "quality": ["type": "string", "enum": ["best", "2160", "1440", "1080", "720", "480"], "description": "Maximum video height. Default: best."],
             "format": ["type": "string", "enum": ["mp4", "mkv", "m4a", "mp3"], "description": "Default: mp4 for video (Mac compatible), m4a for audio."],
             "folder": ["type": "string", "description": "Absolute destination folder (created if needed). Must be inside a folder the user authorized in mDOWN (see list_allowed_folders); otherwise the request waits for the user's approval. Default: the folder set in mDOWN."],
+            "cookies_text": ["type": "string", "description": "Optional Netscape cookies.txt content for sites that need a login. mDOWN keeps it in a private file and deletes it when the download ends."],
             "wait": ["type": "boolean", "description": "Wait until finished (default true). If false, returns the download id at once; poll with get_download."],
             "timeout_seconds": ["type": "integer", "description": "Maximum wait when wait=true. Default 1800."]]]],
         ["name": "get_download", "description": "State, progress and saved file path of a download started with download_media.",
@@ -188,6 +189,7 @@ enum MCPServer {
             guard let url = a["url"] as? String else { return text(["error": "url required"], error: true) }
             var req: [String: Any] = ["op": "add", "url": url]
             for k in ["mode", "quality", "format", "folder"] { if let v = a[k] as? String { req[k] = v } }
+            if let v = a["cookies_text"] as? String { req["cookies"] = v }
             let r = call(req)
             guard r["ok"] as? Bool == true, let job = r["job"] as? [String: Any], let id = job["id"] as? String else { return text(r, error: true) }
             if a["wait"] as? Bool == false { return text(job) }

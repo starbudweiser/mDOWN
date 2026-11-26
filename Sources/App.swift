@@ -44,7 +44,7 @@ struct MDownApp: App {
 /// Silhouette monochrome (image modèle : suit le thème de la barre), plus grande que le pictogramme par défaut.
 @MainActor
 func menuIcon(_ name: String) -> Image {
-    let cfg = NSImage.SymbolConfiguration(pointSize: 19, weight: .semibold)
+    let cfg = NSImage.SymbolConfiguration(pointSize: 16, weight: .semibold)
     guard let img = NSImage(systemSymbolName: name, accessibilityDescription: "mDOWN")?.withSymbolConfiguration(cfg) else { return Image(systemName: name) }
     img.isTemplate = true
     return Image(nsImage: img)
