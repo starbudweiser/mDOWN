@@ -2,3 +2,4 @@
 *.app
 assets/AppIcon.iconset/
 assets/icon-1024.png
+dist/
