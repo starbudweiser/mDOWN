@@ -73,6 +73,8 @@ enum L {
         "plat.fail": ["Ne répond pas", "Not working", "No responde", "Non risponde"],
         "plat.untested": ["Non testé", "Not tested", "Sin probar", "Non testato"],
         "plat.testing": ["Test…", "Testing…", "Probando…", "Test…"],
+        "plat.login": ["Compte requis", "Account needed", "Cuenta necesaria", "Account richiesto"],
+        "set.wclaude": ["Tester les plateformes avec compte via la session de wCLAUDE (si reliée)", "Test account platforms with wCLAUDE's session (if linked)", "Probar las plataformas con cuenta con la sesión de wCLAUDE (si está enlazada)", "Testa le piattaforme con account con la sessione di wCLAUDE (se collegata)"],
         "plat.tested": ["Testé %@", "Tested %@", "Probado %@", "Testato %@"],
         "plat.jobok": ["Dernier téléchargement réussi %@", "Last download succeeded %@", "Última descarga correcta %@", "Ultimo download riuscito %@"],
         "plat.jobfail": ["Dernier échec %@", "Last failure %@", "Último fallo %@", "Ultimo errore %@"],

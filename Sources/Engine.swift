@@ -19,7 +19,7 @@ final class Engine: ObservableObject {
 
     private struct Meta: Codable { var version = ""; var lastCheck: Date?; var platforms: [Platform] = [] }
     private struct Release { var tag: String; var bin: URL; var sums: URL }
-    private struct Probe { var id: String; var name: String; var url: String }
+    private struct Probe { var id: String; var name: String; var url: String; var session = false }
 
     /// Une vidéo de référence stable par plateforme : sert à vérifier qu'un nouveau moteur n'a rien cassé.
     private static let probes = [
@@ -27,6 +27,9 @@ final class Engine: ObservableObject {
         Probe(id: "soundcloud", name: "SoundCloud", url: "https://soundcloud.com/forss/flickermood"),
         Probe(id: "archive", name: "Internet Archive", url: "https://archive.org/details/Popeye_forPresident"),
         Probe(id: "ted", name: "TED", url: "https://www.ted.com/talks/ken_robinson_says_schools_kill_creativity"),
+        Probe(id: "instagram", name: "Instagram", url: "https://www.instagram.com/p/aye83DjauH/", session: true),
+        Probe(id: "vimeo", name: "Vimeo", url: "https://vimeo.com/76979871", session: true),
+        Probe(id: "tiktok", name: "TikTok", url: "https://www.tiktok.com/@leenabhushan/video/6748451240264420610", session: true),
     ]
 
     @Published private(set) var state: State = .missing
@@ -195,14 +198,33 @@ final class Engine: ObservableObject {
         testing = true; defer { testing = false }
         var results: [(Probe, Bool?)] = []
         for p in Self.probes {
-            let r = await Proc.run(ytdlp.path, ["--skip-download", "--simulate", "--no-warnings", "--playlist-items", "1", "--print", "id"] + commonArgs() + [p.url], timeout: 75)
-            let low = r.err.lowercased()
-            let needsAccount = low.contains("logged-in") || low.contains("cookies") || low.contains("sign in")     // ni réussite ni panne du moteur
-            results.append((p, r.status == 0 && !r.out.isEmpty ? true : (needsAccount ? nil : false)))
+            var r = await probe(p.url, cookies: nil)
+            // Plateforme avec compte : deuxième essai avec la session de wCLAUDE, si l'utilisateur l'a reliée.
+            if r.verdict == nil, p.session, let text = await WClaude.cookies(for: p.url) {
+                let f = Paths.base.appendingPathComponent("cookies", isDirectory: true).appendingPathComponent("probe-\(p.id).txt")
+                try? FileManager.default.createDirectory(at: f.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+                if (try? text.write(to: f, atomically: true, encoding: .utf8)) != nil {
+                    try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: f.path)
+                    r = await probe(p.url, cookies: f.path)
+                    try? FileManager.default.removeItem(at: f)
+                }
+            }
+            results.append((p, r.verdict))
         }
         guard results.contains(where: { $0.1 == true }) else { return }       // tout échoue : probablement hors ligne, on ne change rien
         for (p, ok) in results { if let ok { set(id: p.id, name: p.name, ok: ok, fromJob: false) } }
         save()
+    }
+
+    /// Vrai : la plateforme répond. Faux : le moteur ne sait plus l'extraire. Rien : test non concluant (compte requis, vidéo retirée, réseau, IP bloquée…).
+    private func probe(_ url: String, cookies: String?) async -> (verdict: Bool?, err: String) {
+        var a = ["--skip-download", "--simulate", "--no-warnings", "--playlist-items", "1", "--print", "id"] + commonArgs()
+        if let c = cookies { a += ["--cookies", c] }
+        let r = await Proc.run(ytdlp.path, a + [url], timeout: 75)
+        if r.status == 0, !r.out.isEmpty { return (true, "") }
+        let low = r.err.lowercased()
+        let broken = ["unable to extract", "unsupported url", "nsig", "no video formats", "requested format is not available", "challenge", "player response"]
+        return (broken.contains { low.contains($0) } ? false : nil, r.err)
     }
 
     /// Résultat d'un vrai téléchargement : l'état de la plateforme reflète ce qui se passe réellement.
@@ -268,9 +290,10 @@ final class Engine: ObservableObject {
 
     /// Nom lisible d'une plateforme d'après l'identifiant d'extracteur de yt-dlp (« youtube:tab » → YouTube).
     static func platformInfo(extractor: String) -> (id: String, name: String) {
-        let id = extractor.split(separator: ":").first.map { String($0).lowercased() } ?? extractor.lowercased()
+        var id = extractor.split(separator: ":").first.map { String($0).lowercased() } ?? extractor.lowercased()
+        if id == "archive.org" { id = "archive" }
         let names = ["youtube": "YouTube", "vimeo": "Vimeo", "soundcloud": "SoundCloud", "tiktok": "TikTok", "instagram": "Instagram", "twitter": "X", "facebook": "Facebook",
-                     "dailymotion": "Dailymotion", "twitch": "Twitch", "reddit": "Reddit", "bandcamp": "Bandcamp", "arte": "ARTE"]
+                     "dailymotion": "Dailymotion", "archive": "Internet Archive", "ted": "TED", "twitch": "Twitch", "reddit": "Reddit", "bandcamp": "Bandcamp", "arte": "ARTE"]
         return (id, names[id] ?? id.prefix(1).uppercased() + id.dropFirst())
     }
 }

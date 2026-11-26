@@ -259,6 +259,7 @@ struct Sidebar: View {
         if engine.testing && p.ok == nil { Tag(text: L.t("plat.testing")) }
         else if p.ok == true { Tag(text: L.t("plat.ok"), kind: .ok) }
         else if p.ok == false { Tag(text: L.t("plat.fail"), kind: .err) }
+        else if ["vimeo", "tiktok", "twitter"].contains(p.id) { Tag(text: L.t("plat.login")) }
         else { Tag(text: L.t("plat.untested")) }
     }
 
@@ -391,6 +392,7 @@ struct SettingsView: View {
     @AppStorage("autoEngine") private var autoEngine = true
     @AppStorage("autoUpdate") private var autoUpdate = true
     @AppStorage("clip") private var clip = true
+    @AppStorage("useWclaude") private var useWclaude = true
     @State private var login = SMAppService.mainApp.status == .enabled
 
     var body: some View {
@@ -418,6 +420,7 @@ struct SettingsView: View {
                     switchRow(L.t("set.clip"), $clip)
                     switchRow(L.t("set.autoengine"), $autoEngine)
                     switchRow(L.t("set.autoapp"), $autoUpdate)
+                    switchRow(L.t("set.wclaude"), $useWclaude)
                     switchRow(L.t("set.login"), $login).onChange(of: login) { _, on in
                         do { if on { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() } } catch { login = SMAppService.mainApp.status == .enabled }
                     }
