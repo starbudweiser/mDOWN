@@ -1,0 +1,79 @@
+{
+ "name": {
+  "message": "mDOWN"
+ },
+ "desc": {
+  "message": "Scarica la pagina, il link o il media con l'app mDOWN (motore di analisi sempre aggiornato)."
+ },
+ "menu_video": {
+  "message": "Scarica con mDOWN"
+ },
+ "menu_audio": {
+  "message": "Scarica l'audio con mDOWN"
+ },
+ "pop_video": {
+  "message": "Video"
+ },
+ "pop_audio": {
+  "message": "Audio"
+ },
+ "pop_go": {
+  "message": "Scarica"
+ },
+ "pop_best": {
+  "message": "Migliore"
+ },
+ "pop_options": {
+  "message": "Opzioni"
+ },
+ "pop_nopage": {
+  "message": "Questa pagina non può essere scaricata."
+ },
+ "pop_sent": {
+  "message": "Inviato a mDOWN."
+ },
+ "pop_off": {
+  "message": "mDOWN non risponde. Avvia l'app."
+ },
+ "pop_code": {
+  "message": "Codice di associazione mancante o errato: apri le opzioni."
+ },
+ "st_queued": {
+  "message": "In attesa"
+ },
+ "st_analyzing": {
+  "message": "Analisi…"
+ },
+ "st_downloading": {
+  "message": "Download"
+ },
+ "st_done": {
+  "message": "Completato"
+ },
+ "st_failed": {
+  "message": "Errore"
+ },
+ "st_paused": {
+  "message": "In pausa"
+ },
+ "opt_help": {
+  "message": "In mDOWN: Impostazioni, poi «Copia» accanto al codice di associazione dell'estensione e incollalo qui."
+ },
+ "opt_code": {
+  "message": "Codice di associazione"
+ },
+ "opt_port": {
+  "message": "Porta locale di mDOWN"
+ },
+ "opt_save": {
+  "message": "Salva e prova"
+ },
+ "opt_ok": {
+  "message": "Connesso a mDOWN (motore $1$).",
+  "placeholders": {
+   "1": {
+    "content": "$1"
+   }
+  }
+ }
+}

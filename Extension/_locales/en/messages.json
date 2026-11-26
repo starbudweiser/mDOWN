@@ -1,0 +1,79 @@
+{
+ "name": {
+  "message": "mDOWN"
+ },
+ "desc": {
+  "message": "Download the page, link or media with the mDOWN app (self-updating extraction engine)."
+ },
+ "menu_video": {
+  "message": "Download with mDOWN"
+ },
+ "menu_audio": {
+  "message": "Download audio with mDOWN"
+ },
+ "pop_video": {
+  "message": "Video"
+ },
+ "pop_audio": {
+  "message": "Audio"
+ },
+ "pop_go": {
+  "message": "Download"
+ },
+ "pop_best": {
+  "message": "Best"
+ },
+ "pop_options": {
+  "message": "Options"
+ },
+ "pop_nopage": {
+  "message": "This page can't be downloaded."
+ },
+ "pop_sent": {
+  "message": "Sent to mDOWN."
+ },
+ "pop_off": {
+  "message": "mDOWN isn't responding. Start the app."
+ },
+ "pop_code": {
+  "message": "Pairing code missing or wrong: open the options."
+ },
+ "st_queued": {
+  "message": "Waiting"
+ },
+ "st_analyzing": {
+  "message": "Analyzing…"
+ },
+ "st_downloading": {
+  "message": "Downloading"
+ },
+ "st_done": {
+  "message": "Done"
+ },
+ "st_failed": {
+  "message": "Failed"
+ },
+ "st_paused": {
+  "message": "Paused"
+ },
+ "opt_help": {
+  "message": "In mDOWN: Settings, then “Copy” next to the extension pairing code, and paste it here."
+ },
+ "opt_code": {
+  "message": "Pairing code"
+ },
+ "opt_port": {
+  "message": "mDOWN local port"
+ },
+ "opt_save": {
+  "message": "Save and test"
+ },
+ "opt_ok": {
+  "message": "Connected to mDOWN (engine $1$).",
+  "placeholders": {
+   "1": {
+    "content": "$1"
+   }
+  }
+ }
+}

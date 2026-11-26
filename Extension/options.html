@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="popup.css"><style>body{width:auto;max-width:520px;margin:40px auto}label{display:block;color:var(--t2);font-size:12px;margin-bottom:4px}input{width:100%;background:var(--ctl);color:var(--t);border:0;border-radius:7px;padding:9px 10px;font:inherit}</style></head>
+<body>
+  <header><div class="brand"><b>m</b>DOWN</div></header>
+  <section class="card">
+    <p id="help" class="sub"></p>
+    <div><label id="l-code"></label><input id="code" type="password" autocomplete="off" spellcheck="false"></div>
+    <div><label id="l-port"></label><input id="port" type="number" min="1024" max="65535"></div>
+    <div class="row"><button id="save" class="primary"></button><span id="msg" class="msg"></span></div>
+  </section>
+  <script src="lib.js"></script><script src="options.js"></script>
+</body></html>

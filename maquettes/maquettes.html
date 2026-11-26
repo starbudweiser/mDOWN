@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>mDOWN — Maquettes (comparaison des designs)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--rr:20}
+body{font:13px/1.4 -apple-system,"SF Pro Text",system-ui,sans-serif;background:#0b0b0d;color:#eee;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+::selection{background:#22c3a655}
+.top{padding:18px 28px 6px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1{font-size:20px;font-weight:700}.top .sub{color:#999}
+.tabs{display:flex;gap:6px;padding:10px 28px;flex-wrap:wrap}
+.tabs button{background:#222;color:#eee;border:0;padding:8px 16px;border-radius:999px;font:inherit;font-weight:500;cursor:pointer}
+.tabs button.on{background:#22c3a6;color:#06231e}
+.tools{display:none;align-items:center;gap:14px;padding:4px 28px 12px;color:#aaa;flex-wrap:wrap}
+.tools.on{display:flex}
+.tools input[type=range]{width:220px;accent-color:#22c3a6}
+.tools .seg{display:inline-flex;background:#222;border-radius:999px;padding:3px}
+.tools .seg button{border:0;background:none;color:#eee;font:inherit;padding:4px 14px;border-radius:999px;cursor:pointer}
+.tools .seg button.on{background:#444}
+.tools output{color:#fff;font-weight:600;min-width:34px}
+.legend{color:#999;padding:0 28px 10px;max-width:1120px}
+.stage{padding:6px 28px 40px;overflow-x:auto}
+
+/* ---------- fenêtre commune ---------- */
+.win{width:1120px;height:720px;display:grid;grid-template-columns:304px 1fr;grid-template-rows:auto 1fr;overflow:hidden;position:relative;
+ background:var(--bg);color:var(--t);border-radius:var(--rw);box-shadow:var(--sh);font-size:13px}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.bar{grid-column:1/3;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.lights{display:flex;gap:7px}.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#ff5f57}.lights i:nth-child(2){background:#febc2e}.lights i:nth-child(3){background:#28c840}
+.brand{font-weight:700;font-size:15px;margin-left:8px}.brand b{color:var(--m)}
+.svc{margin-left:auto;display:flex;align-items:center;gap:10px;color:var(--t2);font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+.btn{background:var(--ctl);color:var(--t);border:0;padding:6px 12px;border-radius:var(--rc);font:inherit;font-weight:500;display:inline-flex;gap:6px;align-items:center;justify-content:center}
+.btn.pri{background:var(--acc);color:var(--onacc);font-weight:600}
+.btn.sq{padding:6px;width:30px;height:30px}
+.side{padding:14px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.main{padding:14px;display:flex;flex-direction:column;gap:12px;overflow:hidden;min-width:0}
+.h{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);margin-bottom:6px}
+.box{background:var(--card);border:var(--bd);border-radius:var(--rb);padding:12px;box-shadow:var(--shc)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;gap:8px}
+.row>span:first-child{color:var(--t2)}
+.tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:var(--rch);background:var(--ctl);color:var(--t2);white-space:nowrap}
+.tag.new{background:var(--acc);color:var(--onacc)}
+.tag.ok{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ok)}
+.tag.warn{background:color-mix(in srgb,var(--warn) 22%,transparent);color:var(--warn)}
+.tag.err{background:color-mix(in srgb,var(--err) 22%,transparent);color:var(--err)}
+.sub2{color:var(--t2);font-size:12px}
+.m{color:var(--m)}
+
+/* moteur */
+.eng{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.eng .ring{width:34px;height:34px;border-radius:var(--rc);display:grid;place-items:center;background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.eng b{display:block;font-size:14px}
+.plat{display:flex;flex-direction:column;flex:1;justify-content:space-between;margin:4px 0}
+.side>div:first-child{flex:1;display:flex;flex-direction:column}.side>div:first-child .box{flex:1;display:flex;flex-direction:column}
+.list{flex:1}.it{flex:1}
+.plat .row{padding:5px 0}
+.plat .row span:first-child{color:var(--t);display:flex;flex-direction:column;line-height:1.25}
+.plat small{color:var(--t2);font-size:11px}
+.stat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:left}
+.stat div{background:var(--ctl);border-radius:var(--rc);padding:8px 10px}
+.stat b{display:block;font-size:15px}.stat small{color:var(--t2);font-size:11px}
+
+/* principal */
+.paste{display:flex;gap:8px;align-items:center}
+.field{flex:1;background:var(--ctl);border-radius:var(--rc);padding:9px 12px;color:var(--t);display:flex;gap:8px;align-items:center;min-width:0;white-space:nowrap;overflow:hidden}
+.field span{overflow:hidden;text-overflow:ellipsis}
+.field svg{color:var(--t2)}
+.opts{display:flex;gap:8px;align-items:center;color:var(--t2);font-size:12px}
+.segm{display:inline-flex;background:var(--ctl);border-radius:var(--rc);padding:3px}
+.segm span{padding:4px 12px;border-radius:calc(var(--rc) - 2px);color:var(--t2);display:inline-flex;gap:6px;align-items:center}
+.segm span.on{background:var(--acc);color:var(--onacc);font-weight:600}
+.qt{display:flex;justify-content:space-between;align-items:center}
+.list{display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.it{background:var(--card);border:var(--bd);border-radius:var(--rb);padding:10px 12px;display:grid;grid-template-columns:84px 1fr 150px 70px;gap:14px;align-items:center;box-shadow:var(--shc)}
+.th{width:84px;height:52px;border-radius:var(--rc);display:grid;place-items:center;color:#fff;position:relative;overflow:hidden}
+.th svg{width:18px;height:18px;opacity:.9}
+.th em{position:absolute;right:4px;bottom:3px;font-style:normal;font-size:10px;font-weight:600;background:rgba(0,0,0,.55);padding:0 5px;border-radius:4px}
+.nm{font-weight:650;font-size:13.5px;display:flex;gap:8px;align-items:center;min-width:0}
+.nm span.t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt{color:var(--t2);font-size:12px;margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pg{height:6px;border-radius:var(--rch);background:var(--ctl);overflow:hidden;margin-top:6px}
+.pg i{display:block;height:100%;background:var(--acc);border-radius:inherit}
+.pg.done i{background:var(--ok)}.pg.bad i{background:var(--err)}
+.sp{font-size:12px;color:var(--t2)}.sp b{color:var(--t);font-weight:600;font-size:15px;display:block}
+.act{display:flex;gap:6px;justify-content:flex-end}
+.foot{display:flex;gap:10px;color:var(--t2);font-size:12px;align-items:center}
+
+/* ---------- 1. Flat Round ---------- */
+[data-d=round]{--rw:calc(var(--rr)*1px + 6px);--rb:calc(var(--rr)*1px);--rc:calc(var(--rr)*.6px);--rch:calc(var(--rr)*1px);--m:#22c3a6;--sh:0 24px 60px rgba(0,0,0,.35);--shc:none;--bd:none}
+[data-d=round][data-th=sombre]{--bg:#131316;--card:#232327;--ctl:#2c2c31;--t:#f5f5f7;--t2:#98989f;--acc:#0a84ff;--onacc:#fff;--ok:#30d158;--warn:#ff9f0a;--err:#ff6961}
+[data-d=round][data-th=clair]{--bg:#f1f1f5;--card:#fff;--ctl:#e8e8ef;--t:#1c1c22;--t2:#6b6b78;--acc:#6a5af0;--onacc:#fff;--m:#0e9f87;--ok:#1d9a50;--warn:#b86e00;--err:#d6362f;--sh:0 24px 60px rgba(0,0,0,.18);--shc:0 1px 0 rgba(0,0,0,.04)}
+[data-d=round] .side,[data-d=round] .bar{border:0}
+[data-d=round] .it:nth-child(1) .th{background:#ff5d5d}[data-d=round] .it:nth-child(2) .th{background:#ff9f43}
+[data-d=round] .it:nth-child(3) .th{background:#19a7ce}[data-d=round] .it:nth-child(4) .th{background:#e0558a}[data-d=round] .it:nth-child(5) .th{background:#7c6cff}
+/* ---------- 2. Socle standard ---------- */
+[data-d=socle]{--rw:8px;--rb:6px;--rc:4px;--rch:4px;--bg:#131316;--card:#1c1c1f;--ctl:#2c2c31;--t:#f5f5f7;--t2:#98989f;--acc:#0a84ff;--onacc:#fff;--m:#f59e0b;--ok:#30d158;--warn:#ff9f0a;--err:#ff6961;
+ --sh:0 20px 50px rgba(0,0,0,.5);--shc:none;--bd:1px solid #303035;font-size:12.5px}
+[data-d=socle] .th{background:#333;color:#38bdf8;width:64px;height:40px}
+[data-d=socle] .it{grid-template-columns:64px 1fr 150px 64px;padding:8px 12px}
+[data-d=socle] .box{padding:10px}
+[data-d=socle] .th em{display:none}
+/* ---------- 3. Flat Mat ---------- */
+[data-d=mat]{--rw:12px;--rb:10px;--rc:7px;--rch:6px;--bg:#f4f1ec;--card:#fff;--ctl:#ebe6de;--t:#26231e;--t2:#7b756a;--acc:#26231e;--onacc:#f4f1ec;--m:#d9622b;--ok:#2f7d4a;--warn:#a2650f;--err:#c0392b;
+ --sh:0 18px 50px rgba(60,40,10,.18);--shc:none;--bd:1px solid #e3ddd2}
+[data-d=mat][data-th=sombre]{--bg:#131316;--card:#232327;--ctl:#2c2c31;--t:#f5f5f7;--t2:#98989f;--acc:#0a84ff;--onacc:#fff;--m:#f08a52;--ok:#30d158;--warn:#ff9f0a;--err:#ff6961;--sh:0 18px 50px rgba(0,0,0,.5);--bd:1px solid #303035}
+[data-d=mat] .th{background:#26231e;color:#f4f1ec}
+[data-d=mat][data-th=sombre] .th{background:#2c2c31}
+/* ---------- 4. Verre ---------- */
+[data-d=verre]{--rw:22px;--rb:18px;--rc:12px;--rch:999px;--bg:linear-gradient(135deg,#2a1f5c,#0e4a6b 55%,#14383a);--card:rgba(255,255,255,.10);--ctl:rgba(255,255,255,.14);--t:#f5f5f7;--t2:rgba(235,235,245,.66);--acc:#0a84ff;--onacc:#fff;--m:#5eead4;--ok:#5fe08a;--warn:#ffc04d;--err:#ff8a82;
+ --sh:0 30px 70px rgba(0,0,0,.5);--shc:inset 0 1px 0 rgba(255,255,255,.18);--bd:1px solid rgba(255,255,255,.14)}
+[data-d=verre] .box,[data-d=verre] .it{backdrop-filter:blur(24px) saturate(1.4)}
+[data-d=verre] .th{background:linear-gradient(135deg,#ffffff55,#ffffff18);border:1px solid rgba(255,255,255,.25)}
+[data-d=verre] .side{background:rgba(255,255,255,.05)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+ <symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></symbol>
+ <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+ <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+ <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+ <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7.5"/></symbol>
+ <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></symbol>
+ <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></symbol>
+ <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+ <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12M9 18a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM19 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/></symbol>
+ <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.500 7-10V6z"/><path d="m9 12 2.200 2.200L15 10"/></symbol>
+ <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.500 20h19zM12 10v4.500M12 17.500v.1"/></symbol>
+ <symbol id="i-retry" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.500-5.800M4 4v4.500h4.500"/></symbol>
+</defs></svg>
+<div class="top"><h1><span style="color:#22c3a6">m</span>DOWN — Maquettes</h1><span class="sub">Même écran dans les 4 designs · écran principal : lien collé → file de téléchargements + état du moteur d'analyse</span></div>
+<nav class="tabs" id="tabs">
+ <button data-d="round" class="on">Flat Round</button><button data-d="socle">Socle standard</button><button data-d="mat">Flat Mat</button><button data-d="verre">Apple Stephan (verre)</button>
+</nav>
+<div class="tools on" id="tools">
+ <label class="rad">Arrondis des objets</label><input class="rad" type="range" id="rr" min="0" max="32" value="20"><output class="rad" id="rrv">20</output>
+ <span class="seg" id="seg"><button data-th="sombre" class="on">Sombre</button><button data-th="clair">Clair</button></span>
+ <span class="seg rad" id="presets"><button data-v="0">Carré</button><button data-v="10">Doux</button><button data-v="20" class="on">Rond</button><button data-v="32">Très rond</button></span>
+</div>
+<div class="legend" id="legend"></div>
+<div class="stage"><div class="win" id="win" data-d="round" data-th="sombre">
+ <div class="bar"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><b>m</b>DOWN</div>
+  <div class="svc"><span class="dot"></span>Service actif · <b style="color:var(--t)">38 Mo</b> de mémoire · 0,1 % CPU<span class="btn sq"><svg class="i"><use href="#i-gear"/></svg></span></div></div>
+
+ <div class="side">
+  <div><div class="box">
+   <div class="eng"><div class="ring"><svg class="i"><use href="#i-shield"/></svg></div><div><b>À jour · 2026.11.26</b><span class="sub2">Vérifié il y a 3 h · sans recompilation</span></div></div>
+   <div class="plat">
+    <div class="row"><span>YouTube<small>Correctif du 25/11 appliqué</small></span><span class="tag ok">Fonctionne</span></div>
+    <div class="row"><span>Vimeo<small>Extracteur 4.2.1</small></span><span class="tag ok">Fonctionne</span></div>
+    <div class="row"><span>TikTok<small>Extracteur 3.8.0</small></span><span class="tag ok">Fonctionne</span></div>
+    <div class="row"><span>Instagram<small>Nouvel extracteur en test</small></span><span class="tag warn">Mise à jour</span></div>
+    <div class="row"><span>SoundCloud<small>Extracteur 2.9.4</small></span><span class="tag ok">Fonctionne</span></div>
+    <div class="row"><span>X<small>Extracteur 5.1.2</small></span><span class="tag ok">Fonctionne</span></div>
+   </div>
+   <div class="row" style="margin-top:6px"><span>Canal</span><b>Stable</b></div>
+   <div style="display:flex;gap:8px;margin-top:6px"><span class="btn" style="flex:1"><svg class="i"><use href="#i-refresh"/></svg>Vérifier maintenant</span></div>
+  </div></div>
+  <div><div class="stat">
+   <div><b>14</b><small>Terminés</small></div><div><b>2,3 Go</b><small>Reçus</small></div><div><b>1</b><small>Erreur</small></div></div></div>
+  <div><div class="box">
+   <div class="row"><span style="display:flex;gap:8px;align-items:center;color:var(--t)"><svg class="i"><use href="#i-folder"/></svg>Movies/mDOWN</span><span class="tag">Changer</span></div>
+   <div class="row"><span>Lien copié</span><span class="tag ok">Détecté auto</span></div></div></div>
+ </div>
+
+ <div class="main">
+  <div class="paste">
+   <div class="field"><svg class="i"><use href="#i-link"/></svg><span>https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG</span></div>
+   <span class="btn pri" style="padding:9px 18px"><svg class="i"><use href="#i-dl"/></svg>Télécharger</span>
+  </div>
+  <div class="qt"><div class="opts"><span class="segm"><span class="on"><svg class="i"><use href="#i-video"/></svg>Vidéo</span><span><svg class="i"><use href="#i-music"/></svg>Audio</span></span>
+    <span class="btn">Qualité : Meilleure ▾</span><span class="btn">Format : MP4 ▾</span></div>
+   <span class="sub2">6 éléments · 2 en cours, 1 en attente</span></div>
+  <div class="list">
+   <div class="it"><div class="th"><svg class="i"><use href="#i-play"/></svg><em>12:48</em></div>
+    <div><div class="nm"><span class="t">Interview complète — Les coulisses d'un studio de jeu</span><span class="tag">YouTube</span></div>
+     <div class="mt">1080p · MP4 · 412 Mo<span class="tag ok">Téléchargement</span></div><div class="pg"><i style="width:62%"></i></div></div>
+    <div class="sp"><b>4,1 Mo/s</b>62 % · reste 0:42</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-pause"/></svg></span><span class="btn sq"><svg class="i"><use href="#i-x"/></svg></span></div></div>
+   <div class="it"><div class="th"><svg class="i"><use href="#i-music"/></svg><em>24</em></div>
+    <div><div class="nm"><span class="t">Lofi sets — Mix de nuit</span><span class="tag">SoundCloud</span></div>
+     <div class="mt">Playlist · M4A 256 kbit/s · 12 sur 24 pistes</div><div class="pg"><i style="width:50%"></i></div></div>
+    <div class="sp"><b>1,8 Mo/s</b>50 % · reste 3:10</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-pause"/></svg></span><span class="btn sq"><svg class="i"><use href="#i-x"/></svg></span></div></div>
+   <div class="it"><div class="th"><svg class="i"><use href="#i-play"/></svg><em>03:05</em></div>
+    <div><div class="nm"><span class="t">Aurores boréales en 4K — Laponie</span><span class="tag">Vimeo</span></div>
+     <div class="mt">2160p · MP4 · 1,2 Go<span class="tag">En attente</span></div><div class="pg"><i style="width:0"></i></div></div>
+    <div class="sp"><b>—</b>file d'attente</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-x"/></svg></span></div></div>
+   <div class="it"><div class="th"><svg class="i"><use href="#i-play"/></svg><em>00:21</em></div>
+    <div><div class="nm"><span class="t">Recette express — pâtes au citron</span><span class="tag">TikTok</span></div>
+     <div class="mt">720p · MP4 · 18 Mo<span class="tag ok">Terminé</span></div><div class="pg done"><i style="width:100%"></i></div></div>
+    <div class="sp"><b>18 Mo</b>il y a 4 min</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-folder"/></svg></span></div></div>
+   <div class="it"><div class="th"><svg class="i"><use href="#i-alert"/></svg><em>00:34</em></div>
+    <div><div class="nm"><span class="t">Reel — Atelier céramique</span><span class="tag">Instagram</span></div>
+     <div class="mt"><span class="tag err">Analyse refusée</span>Le moteur reçoit un correctif · nouvel essai automatique</div><div class="pg bad"><i style="width:100%"></i></div></div>
+    <div class="sp"><b>—</b>essai dans 2 min</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-retry"/></svg></span></div></div>
+   <div class="it"><div class="th"><svg class="i"><use href="#i-play"/></svg><em>01:12</em></div>
+    <div><div class="nm"><span class="t">Annonce de la mise à jour 2.0</span><span class="tag">X</span></div>
+     <div class="mt">1080p · MP4 · 34 Mo<span class="tag ok">Terminé</span></div><div class="pg done"><i style="width:100%"></i></div></div>
+    <div class="sp"><b>34 Mo</b>il y a 22 min</div><div class="act"><span class="btn sq"><svg class="i"><use href="#i-folder"/></svg></span></div></div>
+  </div>
+  <div class="foot"><span>Service au démarrage de la session · icône dans la barre de menus</span><span style="margin-left:auto">Les fichiers d'origine ne sont jamais modifiés</span></div>
+ </div>
+</div></div>
+<script>
+const win=document.getElementById('win'),rr=document.getElementById('rr'),rrv=document.getElementById('rrv'),tools=document.getElementById('tools'),leg=document.getElementById('legend');
+const L={round:'Flat Round : mat, arrondi, coloré, clair/sombre. Le curseur règle les arrondis de tous les objets (cartes, boutons, puces, fenêtre).',
+socle:'Socle standard : sombre, plat, dense, angles droits, un seul accent bleu. Le plus compact : bon pour un service discret.',
+mat:'Flat Mat (arrondis doux) : fond crème ou charbon, aplats sobres, bordures fines, accent encre/orange (style SOCiALS). Clair / sombre au choix.',
+verre:'Design Apple Stephan : cartes en verre translucide sur fond dégradé, flou et reflets. Le plus gourmand en GPU (flou) : à peser pour un service résident.'};
+function set(d){win.dataset.d=d;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.d===d));
+ document.querySelectorAll('.rad').forEach(e=>e.style.display=d==='round'?'':'none');
+ document.getElementById('seg').style.display=(d==='round'||d==='mat')?'':'none';
+ if(d==='socle'||d==='verre'){win.dataset.th='sombre'}
+ leg.textContent=L[d]}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>set(b.dataset.d));
+function rad(v){win.style.setProperty('--rr',v);rr.value=v;rrv.textContent=v;document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('on',+b.dataset.v===+v))}
+rr.oninput=()=>rad(rr.value);
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>rad(b.dataset.v));
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{win.dataset.th=b.dataset.th;document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b))});
+set('round');
+</script></body></html>

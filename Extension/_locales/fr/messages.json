@@ -1,0 +1,79 @@
+{
+ "name": {
+  "message": "mDOWN"
+ },
+ "desc": {
+  "message": "Télécharge la page, le lien ou le média avec l'application mDOWN (moteur d'analyse à jour)."
+ },
+ "menu_video": {
+  "message": "Télécharger avec mDOWN"
+ },
+ "menu_audio": {
+  "message": "Télécharger l'audio avec mDOWN"
+ },
+ "pop_video": {
+  "message": "Vidéo"
+ },
+ "pop_audio": {
+  "message": "Audio"
+ },
+ "pop_go": {
+  "message": "Télécharger"
+ },
+ "pop_best": {
+  "message": "Meilleure"
+ },
+ "pop_options": {
+  "message": "Options"
+ },
+ "pop_nopage": {
+  "message": "Cette page ne peut pas être téléchargée."
+ },
+ "pop_sent": {
+  "message": "Envoyé à mDOWN."
+ },
+ "pop_off": {
+  "message": "mDOWN ne répond pas. Lancez l'appli."
+ },
+ "pop_code": {
+  "message": "Code d'association manquant ou incorrect : ouvrez les options."
+ },
+ "st_queued": {
+  "message": "En attente"
+ },
+ "st_analyzing": {
+  "message": "Analyse…"
+ },
+ "st_downloading": {
+  "message": "Téléchargement"
+ },
+ "st_done": {
+  "message": "Terminé"
+ },
+ "st_failed": {
+  "message": "Échec"
+ },
+ "st_paused": {
+  "message": "En pause"
+ },
+ "opt_help": {
+  "message": "Dans mDOWN : Réglages, puis « Copier » à côté du code d'association de l'extension, et collez-le ici."
+ },
+ "opt_code": {
+  "message": "Code d'association"
+ },
+ "opt_port": {
+  "message": "Port local de mDOWN"
+ },
+ "opt_save": {
+  "message": "Enregistrer et tester"
+ },
+ "opt_ok": {
+  "message": "Connecté à mDOWN (moteur $1$).",
+  "placeholders": {
+   "1": {
+    "content": "$1"
+   }
+  }
+ }
+}
