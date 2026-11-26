@@ -7,7 +7,8 @@ mDOWN is a light personal media downloader for macOS (part of the DESKTOP MAC TO
 ## Utilisation
 
 - **App** : collez un lien, ou clic droit « Télécharger avec mDOWN » dans le navigateur.
-- **Agent (MCP)** : `claude mcp add mdown -s user -- "/Users/<vous>/Applications/Applications Personnelles/mDOWN.app/Contents/MacOS/mDOWN" --mcp`. Outils : `download_media`, `get_download`, `list_downloads`, `cancel_download`, `list_allowed_folders`, `request_folder_access`, `engine_status`, `update_engine`. Un agent n'écrit que dans les dossiers autorisés dans les réglages ; toute autre demande attend votre accord dans le menu de la barre des menus.
+- **Agent (MCP)** : `claude mcp add mdown -s user -- "/Applications/mDOWN.app/Contents/MacOS/mDOWN" --mcp`. Outils : `download_media`, `get_download`, `list_downloads`, `cancel_download`, `list_allowed_folders`, `request_folder_access`, `engine_status`, `update_engine`. Un agent n'écrit que dans les dossiers autorisés dans les réglages ; toute autre demande attend votre accord dans le menu de la barre des menus.
+- **wCLAUDE (facultatif)** : dans les réglages de [wCLAUDE](https://github.com/starbudweiser/wCLAUDE), activez « Relier wCLAUDE à mDOWN » : bouton mDOWN dans la barre d'outils et outil `browser_download_with_mdown`, avec la session du site pour les vidéos réservées à un compte. mDOWN fonctionne très bien sans wCLAUDE.
 - **Extension Chromium** : `chrome://extensions` → mode développeur → « Charger l'extension non empaquetée » → dossier `mDOWN.app/Contents/Resources/Extension` (ou `Extension/`) ; puis coller le code d'association (Réglages de mDOWN → Copier) dans les options de l'extension.
 - **Safari** : signet « Télécharger avec mDOWN » (Réglages → Copier), lien `mdown://download?url=…`.
 
