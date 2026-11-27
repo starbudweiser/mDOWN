@@ -4,6 +4,8 @@ import AppKit
 import ServiceManagement
 
 private let byteFmt: ByteCountFormatter = { let f = ByteCountFormatter(); f.countStyle = .file; f.allowsNonnumericFormatting = false; return f }()
+/// Mémoire occupée (Mo en français, MB en anglais…), arrondie au Mo.
+private let memFmt: ByteCountFormatter = { let f = ByteCountFormatter(); f.countStyle = .memory; f.allowedUnits = [.useMB]; f.allowsNonnumericFormatting = false; return f }()
 private func bytes(_ n: Int64) -> String { byteFmt.string(fromByteCount: n) }
 private func clock(_ s: Double) -> String {
     let t = Int(s); return t >= 3600 ? String(format: "%d:%02d:%02d", t / 3600, t % 3600 / 60, t % 60) : String(format: "%02d:%02d", t / 60, t % 60)
@@ -53,7 +55,7 @@ struct ContentView: View {
             BrandName().padding(.leading, 70)
             Spacer()
             Circle().fill(T.ok).frame(width: 8, height: 8).overlay(Circle().stroke(T.ok.opacity(0.25), lineWidth: 3))
-            Text(L.t("svc.active", String(format: "%.0f Mo", memory))).font(.system(size: 12)).foregroundColor(T.text2)
+            Text(L.t("svc.active", memFmt.string(fromByteCount: Int64(memory * 1_048_576)))).font(.system(size: 12)).foregroundColor(T.text2)
             IconButton(symbol: "gearshape", help: L.t("set.title")) { showSettings = true }
         }
         .padding(.horizontal, 16).frame(height: 52)
