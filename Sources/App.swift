@@ -6,6 +6,10 @@ import AppKit
 enum Launcher {
     static func main() {
         if CommandLine.arguments.contains("--native") || CommandLine.arguments.dropFirst().contains(where: { $0.hasPrefix("chrome-extension://") }) { NativeHost.run() }
+        if let i = CommandLine.arguments.firstIndex(of: "--install-extension"), CommandLine.arguments.count > i + 1 {      // essai : installe pour un navigateur et affiche le résultat
+            let id = CommandLine.arguments[i + 1]
+            print(ExtensionInstaller.all.first { $0.id == id }.map { ExtensionInstaller.install($0) ?? "ok" } ?? "navigateur inconnu"); exit(0)
+        }
         if CommandLine.arguments.contains("--mcp") { MCPServer.run() }      // serveur MCP pour un agent : aucune interface
         MDownApp.main()
     }

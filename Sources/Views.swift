@@ -466,7 +466,8 @@ struct SettingsView: View {
                     if ExtensionInstaller.detected.isEmpty { Text(L.t("set.ext.none")).font(.system(size: 12)).foregroundColor(T.text2) }
                     ForEach(ExtensionInstaller.detected) { b in
                         extRow(b.name, button: L.t(extDone.contains(b.id) || ExtensionInstaller.isInstalled(b) ? "set.ext.reinstall" : "set.ext.install")) {
-                            if ExtensionInstaller.install(b) { extDone.insert(b.id); extNote = L.t("set.ext.next", b.name) } else { extNote = L.t("set.ext.fail") }
+                            if let why = ExtensionInstaller.install(b) { extNote = L.t("set.ext.fail") + " (" + why + ")" }
+                            else { extDone.insert(b.id); extNote = L.t("set.ext.next", b.name); ExtensionInstaller.openExtensionsPage(b) }
                         }
                     }
                     if !extNote.isEmpty { Text(extNote).font(.system(size: 11.5)).foregroundColor(T.text2).fixedSize(horizontal: false, vertical: true) }
