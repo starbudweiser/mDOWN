@@ -228,7 +228,7 @@ struct Sidebar: View {
                 stat(String(store.jobs.filter { $0.state == .failed }.count), L.t("today.errors"))
             }
 
-            Card {
+            Card(tint: T.brand) {
                 VStack(spacing: 6) {
                     HStack {
                         Label(store.folder.path.replacingOccurrences(of: NSHomeDirectory() + "/", with: ""), systemImage: "folder").lineLimit(1).truncationMode(.middle)

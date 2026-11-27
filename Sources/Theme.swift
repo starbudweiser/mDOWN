@@ -47,11 +47,13 @@ struct BrandName: View {
 
 struct Card<Content: View>: View {
     var pad: CGFloat = 12
+    var tint: Color? = nil          // carte mise en avant : fond et liseré teintés
     @ViewBuilder var content: Content
     var body: some View {
         content.frame(maxWidth: .infinity, alignment: .leading).padding(pad)
             .background(T.card, in: RoundedRectangle(cornerRadius: T.rCard, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: T.rCard, style: .continuous).stroke(T.line, lineWidth: 1))
+            .background((tint ?? .clear).opacity(0.16), in: RoundedRectangle(cornerRadius: T.rCard, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: T.rCard, style: .continuous).stroke(tint?.opacity(0.55) ?? T.line, lineWidth: 1))
     }
 }
 
