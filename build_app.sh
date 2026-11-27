@@ -16,7 +16,9 @@ if [ -n "${DEV:-}" ]; then
   /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier fr.stephan.mdown.dev" -c "Set :CFBundleDisplayName mDOWN Dev" -c "Set :CFBundleName mDOWN Dev" "$APP/Contents/Info.plist"
   /usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 mdown-dev" "$APP/Contents/Info.plist"
 fi
+./pack_extension.sh
 cp -R Extension "$APP/Contents/Resources/Extension"
+[ -f assets/mDOWN.crx ] && cp assets/mDOWN.crx "$APP/Contents/Resources/mDOWN.crx"
 SIGN="/Volumes/SKYRIM/TOOLS/MAC/_tools/sign_app.sh"
 if [ -x "$SIGN" ]; then "$SIGN" "$APP"; else codesign --force --deep -s - "$APP"; fi
 if [ -z "${NO_INSTALL:-}" ]; then

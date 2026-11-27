@@ -33,7 +33,7 @@
   "message": "Sent to mDOWN."
  },
  "pop_off": {
-  "message": "mDOWN isn't responding. Start the app."
+  "message": "mDOWN is not responding. Start the app or install the extension from its settings."
  },
  "pop_code": {
   "message": "Pairing code missing or wrong: open the options."
@@ -57,7 +57,7 @@
   "message": "Paused"
  },
  "opt_help": {
-  "message": "In mDOWN: Settings, then “Copy” next to the extension pairing code, and paste it here."
+  "message": "Advanced setting, not needed normally: the extension talks to mDOWN by itself. This code is only used if the relay is not installed (mDOWN Settings, “Browser extension”)."
  },
  "opt_code": {
   "message": "Pairing code"

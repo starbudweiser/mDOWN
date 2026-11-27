@@ -5,6 +5,7 @@ import AppKit
 @main
 enum Launcher {
     static func main() {
+        if CommandLine.arguments.contains("--native") || CommandLine.arguments.dropFirst().contains(where: { $0.hasPrefix("chrome-extension://") }) { NativeHost.run() }
         if CommandLine.arguments.contains("--mcp") { MCPServer.run() }      // serveur MCP pour un agent : aucune interface
         MDownApp.main()
     }
@@ -58,6 +59,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Store.shared.start()
         ControlServer.shared.start()
         Bridge.shared.start()
+        ExtensionInstaller.refresh()
         if !Paths.isDev {
             updateTimer = Timer.scheduledTimer(withTimeInterval: 6 * 3600, repeats: true) { _ in
                 Task { @MainActor in Updater.shared.tick(busy: Store.shared.isBusy) }

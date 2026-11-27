@@ -33,7 +33,7 @@
   "message": "Enviado a mDOWN."
  },
  "pop_off": {
-  "message": "mDOWN no responde. Abra la app."
+  "message": "mDOWN no responde. Abra la app o instale la extensión desde sus ajustes."
  },
  "pop_code": {
   "message": "Código de asociación ausente o incorrecto: abra las opciones."
@@ -57,7 +57,7 @@
   "message": "En pausa"
  },
  "opt_help": {
-  "message": "En mDOWN: Ajustes, luego «Copiar» junto al código de asociación de la extensión, y péguelo aquí."
+  "message": "Ajuste avanzado, innecesario normalmente: la extensión habla sola con mDOWN. Este código solo se usa si el relé no está instalado (Ajustes de mDOWN, «Extensión del navegador»)."
  },
  "opt_code": {
   "message": "Código de asociación"

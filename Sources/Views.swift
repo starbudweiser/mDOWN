@@ -462,10 +462,14 @@ struct SettingsView: View {
             }
             Card(pad: 16) {
                 VStack(alignment: .leading, spacing: 10) {
-                    extRow(L.t("set.ext.code"), button: copied == "code" ? L.t("set.copied") : L.t("set.copy")) { copy(Bridge.shared.token, "code") }
-                    extRow(L.t("set.ext.folder"), button: L.t("set.show")) {
-                        if let f = Bridge.shared.extensionFolder { NSWorkspace.shared.activateFileViewerSelecting([f]) }
+                    Text(L.t("set.ext.title")).font(.system(size: 11.5)).foregroundColor(T.text2)
+                    if ExtensionInstaller.detected.isEmpty { Text(L.t("set.ext.none")).font(.system(size: 12)).foregroundColor(T.text2) }
+                    ForEach(ExtensionInstaller.detected) { b in
+                        extRow(b.name, button: L.t(extDone.contains(b.id) || ExtensionInstaller.isInstalled(b) ? "set.ext.reinstall" : "set.ext.install")) {
+                            if ExtensionInstaller.install(b) { extDone.insert(b.id); extNote = L.t("set.ext.next", b.name) } else { extNote = L.t("set.ext.fail") }
+                        }
                     }
+                    if !extNote.isEmpty { Text(extNote).font(.system(size: 11.5)).foregroundColor(T.text2).fixedSize(horizontal: false, vertical: true) }
                     extRow(L.t("set.ext.bookmarklet"), button: copied == "bm" ? L.t("set.copied") : L.t("set.copy")) { copy(Bridge.shared.bookmarklet, "bm") }
                 }
             }
@@ -480,6 +484,8 @@ struct SettingsView: View {
     }
 
     @State private var copied = ""
+    @State private var extDone: Set<String> = []
+    @State private var extNote = ""
     private func copy(_ s: String, _ k: String) {
         NSPasteboard.general.clearContents(); NSPasteboard.general.setString(s, forType: .string)
         copied = k

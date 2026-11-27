@@ -33,7 +33,7 @@
   "message": "Envoyé à mDOWN."
  },
  "pop_off": {
-  "message": "mDOWN ne répond pas. Lancez l'appli."
+  "message": "mDOWN ne répond pas. Lancez l'appli ou installez l'extension depuis ses réglages."
  },
  "pop_code": {
   "message": "Code d'association manquant ou incorrect : ouvrez les options."
@@ -57,7 +57,7 @@
   "message": "En pause"
  },
  "opt_help": {
-  "message": "Dans mDOWN : Réglages, puis « Copier » à côté du code d'association de l'extension, et collez-le ici."
+  "message": "Réglage avancé, inutile en usage normal : l'extension parle à mDOWN seule. Ce code ne sert que si le relais n'est pas installé (réglages de mDOWN, « Extension du navigateur »)."
  },
  "opt_code": {
   "message": "Code d'association"

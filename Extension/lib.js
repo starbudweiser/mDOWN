@@ -1,15 +1,29 @@
-// mDOWN — échanges avec l'appli (boucle locale uniquement). Le code d'association vient des réglages de mDOWN.
+// mDOWN — échanges avec l'appli. Voie normale : messagerie native (aucun code à saisir, l'appli installe le relais).
+// Repli : passerelle locale 127.0.0.1 avec un code d'association (édition de développement, navigateurs sans relais).
 const DEFAULT_PORT = 47615;
+const NATIVE_HOST = "fr.stephan.mdown";
 
 async function settings() {
   const s = await chrome.storage.local.get({ code: "", port: DEFAULT_PORT });
   return { code: (s.code || "").trim(), port: Number(s.port) || DEFAULT_PORT };
 }
 
+function native(path, body) {
+  return new Promise((resolve) => {
+    try {
+      chrome.runtime.sendNativeMessage(NATIVE_HOST, { path, body: body === undefined ? {} : body }, (r) => {
+        if (chrome.runtime.lastError || !r) resolve(null); else resolve(r);
+      });
+    } catch (e) { resolve(null); }
+  });
+}
+
 // Rend {ok:true,…} ou {ok:false, error:"app_off" | "bad_code" | …}
 async function mdown(path, body) {
+  const viaNative = await native(path, body);
+  if (viaNative) return viaNative;
   const { code, port } = await settings();
-  if (!code) return { ok: false, error: "bad_code" };
+  if (!code) return { ok: false, error: "app_off" };
   try {
     const r = await fetch(`http://127.0.0.1:${port}${path}`, {
       method: "POST",             // POST : Chrome envoie alors toujours l'origine de l'extension
